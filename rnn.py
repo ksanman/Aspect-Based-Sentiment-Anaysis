@@ -2,6 +2,7 @@ import tflearn as tf
 import numpy as np
 from tensorflow import reset_default_graph
 class RNN:
+    """ Recurrent neural network model. """
     def __init__(self):
         pass
 

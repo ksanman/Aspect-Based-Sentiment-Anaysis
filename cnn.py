@@ -2,6 +2,7 @@ import tflearn as tf
 import numpy as np
 from tensorflow import reset_default_graph
 class CNN:
+    """ Convolution  neural network model. """
     def __init__(self):
         pass
 
@@ -10,8 +11,6 @@ class CNN:
         net = tf.input_data(shape=(None, x.shape[1]))
         net = tf.embedding(net, input_dim=400000, output_dim=50, trainable=False)
         net = tf.conv_1d(net, x.shape[1], 3, padding='valid', activation='relu')
-        net = tf.max_pool_1d(net, 2)
-        net = tf.conv_1d(net, 128, 4, padding='valid', activation='relu')
         net = tf.max_pool_1d(net, 2)
         net = tf.conv_1d(net, 64, 3, padding='valid', activation='relu')
         net = tf.max_pool_1d(net, 2)

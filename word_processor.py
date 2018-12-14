@@ -2,12 +2,6 @@
 This file is used to process reviews and turn them into word vectors for classification. 
 Each vector represents a sentiment phrase. 
 """
-from nltk import sent_tokenize
-from nltk import PorterStemmer
-#from pprint import pprint
-#from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktTrainer
-#from nltk.corpus import gutenberg
-from unicodedata import normalize
 from sklearn.feature_extraction.text import TfidfVectorizer 
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS as stop_words
 import sklearn
@@ -16,9 +10,9 @@ import re
 
 class WordProcessor:
 
-    def __init__(self):
+    def __init__(self,max_features):
         self.stemmer = PorterStemmer()
-        self.tfidfconverter = TfidfVectorizer(max_features=100, min_df=5, max_df=0.7, stop_words=stop_words, use_idf=True, ngram_range=(1,3))
+        self.tfidfconverter = TfidfVectorizer(max_features=max_features, min_df=5, max_df=0.7, stop_words=stop_words, use_idf=True, ngram_range=(1,3))
 
     def process(self, reviews):
         """
@@ -56,7 +50,9 @@ class WordProcessor:
         return h_re_reviews
 
     def vectorize_train(self, reviews):
+        """ Vectorizes reviews after fitting tfid. """
         return self.tfidfconverter.fit_transform(reviews)
 
     def vectorize(self, reviews):
+        """ Vectorizes reviews using an already fitted tdif. """
         return self.tfidfconverter.transform(reviews)

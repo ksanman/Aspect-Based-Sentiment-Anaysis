@@ -3,6 +3,7 @@ from sklearn.metrics import accuracy_score
 import numpy as np
 
 class Regression:
+    """ Regression model. """
     def __init__(self):
         pass
 

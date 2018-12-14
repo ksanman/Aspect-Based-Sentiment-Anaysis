@@ -2,6 +2,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 
 class RandomForest:
+    """ Random forest model. """
     def __init__(self):
         self.classifier = RandomForestClassifier(n_estimators=100, random_state=0)
 

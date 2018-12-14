@@ -2,6 +2,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.svm import SVC
 
 class SVM:
+    """ Class defines an SVM model to use in sentiment analysis """
     def __init__(self):
         self.classifier = SVC(kernel='linear')
 
