@@ -33,7 +33,7 @@ SEED = 2000
 # Lower this number when training the CNN and RNN, otherwise there will be an out of memory exception. 
 # The RNN and CNN were tested with 100 reviews and 80 features. 
 REVIEW_COUNT = 100000
-FEATURES = 1500
+FEATURES = 100000
 DATA_DIRECTORY = '../review_data/'
 
 ###################################################
@@ -65,28 +65,28 @@ x_test_arr = processor.vectorize(x_test).toarray()
 #print x_vect
 #print x_vect.toarray()
 
-f = open('results1.txt', 'w+')
+#f = open('results1.txt', 'w+')
 
 print 'linear regression'
 reg = r.Regression()
 reg.fit(x_vect, y_train, x_val_arr, y_validation)
 score = reg.score(x_test_arr, y_test)
 print 'Regression Score: ', score
-f.write('Regression Score: {0}\n'.format(score))
+#f.write('Regression Score: {0}\n'.format(score))
 
 print 'random forest'
 forest = rf.RandomForest()
 forest.fit(x_vect, y_train, x_val_arr, y_validation)
 score = forest.score(x_test_arr, y_test)
 print 'Random Forest Score: ', score
-f.write('Random Forest Score: {0}\n'.format(score))
+#f.write('Random Forest Score: {0}\n'.format(score))
 
 print 'svm'
 s = svm.SVM()
 s.fit(x_vect, y_train, x_val_arr, y_validation)
 score = s.score(x_test_arr, y_test)
 print 'svm accuracy: ',score 
-f.write('SVM Score: {0}\n'.format(score))
+#f.write('SVM Score: {0}\n'.format(score))
 
 def one_hot(Y):
    return [[0, 1] if y == 1 else [1,0] for y in Y] 
@@ -98,7 +98,7 @@ nn.build_model(x_vect.toarray(), one_hot(y_train), x_val_arr, one_hot(y_validati
 
 score = nn.score(x_test_arr, y_test)
 print 'ANN accuracy: ', score
-f.write('ANN Score: {0}\n'.format(score))
+#f.write('ANN Score: {0}\n'.format(score))
 
 ##############################################################################
 #

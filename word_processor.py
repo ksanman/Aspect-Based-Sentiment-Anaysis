@@ -11,7 +11,6 @@ import re
 class WordProcessor:
 
     def __init__(self,max_features):
-        self.stemmer = PorterStemmer()
         self.tfidfconverter = TfidfVectorizer(max_features=max_features, min_df=5, max_df=0.7, stop_words=stop_words, use_idf=True, ngram_range=(1,3))
 
     def process(self, reviews):
