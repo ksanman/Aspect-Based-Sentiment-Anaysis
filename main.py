@@ -12,50 +12,97 @@ import word_processor as wp
 import data_access as da
 import numpy as np
 import regression as r
+import random_forest as rf
+import svm
+import ann
+import cnn
+import rnn
+
+from sklearn.model_selection import train_test_split
 
 
+SEED = 2000
 REVIEW_COUNT = 1000
 
 d_access = da.DataAccess()
-
-training_set = d_access.get_training_reviews(REVIEW_COUNT)
-testing_set = d_access.get_test_reviews(REVIEW_COUNT)
-
-print 'Negative training data: ', len(training_set['negative'])
-print 'Positive training data: ', len(training_set['positive'])
-print 'Negative testing data: ', len(testing_set['negative'])
-print 'Positive testing data: ', len(testing_set['positive'])
-
+data = d_access.get_data(REVIEW_COUNT)
 processor =  wp.WordProcessor()
 
-train_pos_labels = np.ones(len(training_set['positive']), dtype=int)
-train_neg_labels = np.zeros(len(training_set['negative']),dtype=int)
-test_pos_labels = np.zeros(len(testing_set['positive']),dtype=int)
-test_neg_labels = np.ones(len(testing_set['negative']),dtype=int)
+print 'positive data: ', len(data['positive'])
+print 'negative data: ', len(data['negative'])
+pos_labels = [1 for _ in range(len(data['positive']))]
+neg_labels = [0  for _ in range(len(data['negative']))]
 
-training_labels = np.concatenate((train_pos_labels, train_neg_labels), axis=0)
-training_data = np.concatenate((training_set['positive'], training_set['negative']), axis=0)
 
-testing_labels = np.concatenate((test_pos_labels,test_neg_labels), axis=0)
-testing_data = np.concatenate((testing_set['positive'],testing_set['negative']), axis=0)
+labels = np.concatenate([pos_labels, neg_labels])
+inputs = np.concatenate([data['positive'], data['negative']])
 
-training_data_clean = processor.process(training_data)
-testing_data_clean = processor.process(testing_data)
+# Preprocess the data
+inputs = processor.process(inputs)
 
-X = processor.vectorize_train(training_data_clean)
-T = processor.vectorize(testing_data_clean)
-reg = r.Regression()
-reg.fit(X, training_labels)
+x_train, x_leftover, y_train, y_leftover = train_test_split(inputs, labels, test_size=0.25, train_size=0.75,random_state=SEED)
 
-results = []
-for test_review in T:
-    results.append(reg.evaluate(test_review))
+x_validation, x_test, y_validation, y_test = train_test_split(x_leftover, y_leftover, test_size=0.5, train_size=0.5, random_state=SEED)
 
-acc = 0.0
-for i, res in enumerate(results):
-    if res[0] == testing_labels[i]:
-        acc += 1.0
+x_vect = processor.vectorize_train(x_train)
+x_val_arr = processor.vectorize(x_validation).toarray()
+x_test_arr = processor.vectorize(x_test).toarray()
+#print x_vect
+#print x_vect.toarray()
 
-n = len(testing_labels)
-f_acc = acc / n
-print 'Final Regression Accuracy: ', f_acc * 100
+f = open('results1.txt', 'w+')
+
+#print 'linear regression'
+#reg = r.Regression()
+#reg.fit(x_vect, y_train, x_val_arr, y_validation)
+#score = reg.score(x_test_arr, y_test)
+#print 'Regression Score: ', score
+#f.write('Regression Score: {0}\n'.format(score))
+
+#print 'random forest'
+#forest = rf.RandomForest()
+#forest.fit(x_vect, y_train, x_val_arr, y_validation)
+#score = forest.score(x_test_arr, y_test)
+#print 'Random Forest Score: ', score
+#f.write('Random Forest Score: {0}\n'.format(score))
+
+#print 'svm'
+#s = svm.SVM()
+#s.fit(x_vect, y_train, x_val_arr, y_validation)
+#score = s.score(x_test_arr, y_test)
+#print 'svm accuracy: ',score 
+#f.write('SVM Score: {0}\n'.format(score))
+
+def one_hot(Y):
+   return [[0, 1] if y == 1 else [1,0] for y in Y] 
+
+#print 'ann'
+
+#nn = ann.ANN()
+#nn.build_model(x_vect.toarray(), one_hot(y_train), x_val_arr, one_hot(y_validation))
+
+#score = nn.score(x_test_arr, y_test)
+#print 'ANN accuracy: ', score
+#f.write('ANN Score: {0}\n'.format(score))
+
+print 'cnn'
+
+c_nn = cnn.CNN()
+c_nn.build_model(x_vect.toarray(), one_hot(y_train), x_val_arr, one_hot(y_validation))
+
+score = c_nn.score(x_test_arr, y_test)
+print 'CNN accuracy: ', score
+f.write('CNN Score: {0}\n'.format(score))
+
+print 'rnn'
+
+r_nn = rnn.RNN()
+r_nn.build_model(x_vect.toarray(), one_hot(y_train), x_val_arr, one_hot(y_validation))
+
+score = r_nn.score(x_test_arr, y_test)
+print 'RNN accuracy: ', score
+f.write('RNN Score: {0}\n'.format(score))
+f.close()
+
+
+

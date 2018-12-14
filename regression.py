@@ -1,30 +1,26 @@
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
 import numpy as np
 
 class Regression:
     def __init__(self):
         pass
 
-    def fit(self, X, Y):
+    def fit(self, X, Y, x_test, y_test):
 
-        X_train, X_val, y_train, y_val = train_test_split(X, Y, train_size = 0.75)
-
-        accuracies = []
         cs = [0.01, 0.05, 0.25, 0.5, 1]
-
+        accuracies = []
         for c in cs:
             
-            lr = LogisticRegression(C=c)
-            lr.fit(X_train, y_train)
-            accuracy = accuracy_score(y_val, lr.predict(X_val))
-            print ("Accuracy for C=%s: %s" % (c, accuracy))
-            accuracies.append(accuracy)
+            lr = LogisticRegression(C=c, solver='sag')
+            lr.fit(X, Y)
+            accuracies.append(accuracy_score(y_test, lr.predict(x_test)))
 
-        self.C = cs[np.argmax(accuracies)]
-        self.model = LogisticRegression(C = self.C)
-        self.model.fit(X,Y)
+        highestIndex = np.argmax(accuracies)
+        print ("Regression Accuracy for C=%s: %s" % (cs[highestIndex], accuracies[highestIndex]))
+	self.classifier = LogisticRegression(C=cs[highestIndex], solver='sag')
+	self.classifier.fit(X,Y)
 
-    def evaluate(self, x):
-        return self.model.predict(x)
+    def score(self, X, Y):
+        return accuracy_score(Y, self.classifier.predict(X))
+

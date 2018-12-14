@@ -1,0 +1,4 @@
+Regression Score: 0.84928
+Random Forest Score: 0.82588
+SVM Score: 0.84884
+ANN Score: 0.85084

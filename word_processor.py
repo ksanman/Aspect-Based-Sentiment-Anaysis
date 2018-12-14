@@ -4,9 +4,9 @@ Each vector represents a sentiment phrase.
 """
 from nltk import sent_tokenize
 from nltk import PorterStemmer
-from pprint import pprint
-from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktTrainer
-from nltk.corpus import gutenberg
+#from pprint import pprint
+#from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktTrainer
+#from nltk.corpus import gutenberg
 from unicodedata import normalize
 from sklearn.feature_extraction.text import TfidfVectorizer 
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS as stop_words
@@ -18,7 +18,7 @@ class WordProcessor:
 
     def __init__(self):
         self.stemmer = PorterStemmer()
-        self.tfidfconverter = TfidfVectorizer(max_features=1500, min_df=5, max_df=0.7, stop_words=stop_words) 
+        self.tfidfconverter = TfidfVectorizer(max_features=100, min_df=5, max_df=0.7, stop_words=stop_words, use_idf=True, ngram_range=(1,3))
 
     def process(self, reviews):
         """
